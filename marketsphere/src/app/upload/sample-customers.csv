@@ -1,0 +1,7 @@
+Customer ID,Age,Gender,Income,City,Purchase Amount,Purchase Frequency,Category,Last Purchase Date
+CUST-001,28,Male,65000,Pune,24999,8,Electronics,2026-07-20
+CUST-002,34,Female,82000,Mumbai,45999,12,Home,2026-07-25
+CUST-003,22,Female,28000,Nagpur,3999,3,Fashion,2026-05-11
+CUST-004,41,Male,120000,Pune,78999,15,Electronics,2026-07-29
+CUST-005,26,Male,35000,Nashik,5999,2,Fashion,2026-03-18
+CUST-006,38,Female,95000,Mumbai,32999,10,Beauty,2026-07-22
