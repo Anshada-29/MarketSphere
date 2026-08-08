@@ -22,6 +22,7 @@ app.add_middleware(
     CORSMiddleware,
     allow_origins=[
         "http://localhost:3000",
+            "https://market-sphere-2gm8.vercel.app",
     ],
     allow_credentials=True,
     allow_methods=["*"],

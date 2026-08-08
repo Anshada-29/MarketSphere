@@ -1,7 +1,9 @@
 "use client";
 
+import { API_URL } from "@/lib/api";
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
+import type { ReactNode } from "react";
 import {
   ArrowLeft,
   ArrowUpRight,
@@ -44,12 +46,17 @@ const segmentColors: Record<string, string> = {
   "At-Risk Customers": "bg-rose-500",
 };
 
-function formatCurrency(value: number) {
+function toNumber(value: unknown): number {
+  const number = Number(value);
+  return Number.isFinite(number) ? number : 0;
+}
+
+function formatCurrency(value: number): string {
   return new Intl.NumberFormat("en-IN", {
     style: "currency",
     currency: "INR",
     maximumFractionDigits: 0,
-  }).format(value);
+  }).format(toNumber(value));
 }
 
 export default function SegmentsPage() {
@@ -60,16 +67,30 @@ export default function SegmentsPage() {
   useEffect(() => {
     async function loadAnalytics() {
       try {
-        const response = await fetch(
-          "http://localhost:8000/analytics/overview"
-        );
+        const response = await fetch(`${API_URL}/analytics/overview`);
 
         if (!response.ok) {
           throw new Error("Unable to load analytics.");
         }
 
-        const data: AnalyticsData = await response.json();
-        setAnalytics(data);
+        const data = await response.json();
+
+        const normalizedSegments: Segment[] = Array.isArray(data.segments)
+          ? data.segments.map((segment: Partial<Segment>) => ({
+              name: segment.name || "Unknown segment",
+              customers: toNumber(segment.customers),
+              revenue: toNumber(segment.revenue),
+              revenue_share: toNumber(segment.revenue_share),
+            }))
+          : [];
+
+        setAnalytics({
+          total_customers: toNumber(data.total_customers),
+          total_revenue: toNumber(data.total_revenue),
+          average_order_value: toNumber(data.average_order_value),
+          at_risk_customers: toNumber(data.at_risk_customers),
+          segments: normalizedSegments,
+        });
       } catch {
         setError(
           "Could not connect to the MarketSphere API. Make sure FastAPI is running."
@@ -83,9 +104,13 @@ export default function SegmentsPage() {
   }, []);
 
   const highestRevenueSegment = useMemo(() => {
-    if (!analytics?.segments.length) return null;
+    const segments = analytics?.segments ?? [];
 
-    return [...analytics.segments].sort(
+    if (segments.length === 0) {
+      return null;
+    }
+
+    return [...segments].sort(
       (first, second) => second.revenue - first.revenue
     )[0];
   }, [analytics]);
@@ -292,7 +317,7 @@ function MetricCard({
   value,
   color,
 }: {
-  icon: React.ReactNode;
+  icon: ReactNode;
   label: string;
   value: string;
   color: string;
