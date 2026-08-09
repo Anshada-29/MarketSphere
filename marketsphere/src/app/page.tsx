@@ -1,5 +1,5 @@
 "use client";
-
+import { API_URL } from "@/lib/api";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import type { ReactNode } from "react";
@@ -53,7 +53,7 @@ export default function Home() {
     async function loadAnalytics() {
       try {
         const response = await fetch(
-          "http://localhost:8000/analytics/overview"
+          `${API_URL}/analytics/overview`
         );
 
         if (!response.ok) {

@@ -1,5 +1,5 @@
 "use client";
-
+import { API_URL } from "@/lib/api";
 import Link from "next/link";
 import Papa from "papaparse";
 import { ChangeEvent, useState } from "react";
@@ -107,9 +107,7 @@ export default function UploadPage() {
     formData.append("file", file);
 
     try {
-      const response = await fetch(
-        "http://localhost:8000/customers/upload",
-        {
+      const response = await fetch( `${API_URL}/customers/upload`, {
           method: "POST",
           body: formData,
         }

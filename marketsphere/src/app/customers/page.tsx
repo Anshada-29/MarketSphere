@@ -1,5 +1,5 @@
 "use client";
-
+import { API_URL } from "@/lib/api";
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import {
@@ -50,7 +50,7 @@ export default function CustomersPage() {
     async function loadCustomers() {
       try {
         const response = await fetch(
-          "http://localhost:8000/analytics/customers"
+          `${API_URL}/analytics/customers`
         );
 
         if (!response.ok) {
